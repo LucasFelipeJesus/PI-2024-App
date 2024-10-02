@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { Checkbox } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 export default function Tab() {
-    const [isServiceChecked, setIsServiceChecked] = useState(false);
-    const [isProfessionalChecked, setIsProfessionalChecked] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null);
 
     return (
         <View style={styles.container}>
@@ -13,24 +12,22 @@ export default function Tab() {
                 source={require('../../../assets/bbq3.jpg')}
             />
 
-            <View style={styles.checkboxContainer}>
-                <Checkbox
-                    status={isServiceChecked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setIsServiceChecked(!isServiceChecked);
-                    }}
-                />
-                <Text style={styles.label}>Procuro o serviço</Text>
+            <View style={styles.buttonContainer}>
+                <Button
+                    mode={selectedOption === 'service' ? 'contained' : 'outlined'}
+                    onPress={() => setSelectedOption('service')}
+                >
+                    Procuro o serviço
+                </Button>
             </View>
 
-            <View style={styles.checkboxContainer}>
-                <Checkbox
-                    status={isProfessionalChecked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setIsProfessionalChecked(!isProfessionalChecked);
-                    }}
-                />
-                <Text style={styles.label}>Sou profissional</Text>
+            <View style={styles.buttonContainer}>
+                <Button
+                    mode={selectedOption === 'professional' ? 'contained' : 'outlined'}
+                    onPress={() => setSelectedOption('professional')}
+                >
+                    Sou profissional
+                </Button>
             </View>
         </View>
     );
@@ -46,14 +43,9 @@ const styles = StyleSheet.create({
         width: '90%',
         height: '40%',
     },
-    checkboxContainer: {
-        flexDirection: 'row',
+    buttonContainer: {
         marginVertical: 10,
-        alignItems: 'center',
-    },
-    label: {
-        marginLeft: 8,
-        fontSize: 16,
+        width: '80%',
     },
 });
 
