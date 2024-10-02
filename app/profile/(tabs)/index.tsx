@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 
 
 
-
+//código anterior
 // import { View, Text, StyleSheet } from 'react-native';
 // import { Image } from 'react-native';
 
