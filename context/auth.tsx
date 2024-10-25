@@ -1,41 +1,57 @@
-import React, { createContext, useContext, useState } from 'react'
-import { router } from 'expo-router'
+import { router } from "expo-router"
+import React, { createContext, ReactNode, useContext, useState } from "react"
+import { initializeAuth, signInWithEmailAndPassword } from "firebase/auth"
+import firebaseApp from "../app/services/firebase"
+import * as SecureStore from 'expo-secure-store'
 
-interface IUser {
+interface IUserLogin {
     email: string
     password: string
 }
 
 interface IAuthContext {
-    user: IUser
-    setUser: (user: IUser) => void
+    user: IUserLogin
+    setUser: (user: IUserLogin) => void
     handleLogin: () => void
 }
 
-interface AuthProviderProps {
-    children: React.ReactNode;
+interface IAuthProviderProps {
+    children: ReactNode
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<IUser>({ email: '', password: '' })
+export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
+    const [user, setUser] = useState<IUserLogin>({ email: "", password: "" })
 
-    function handleLogin() {
-        if (user && user.email === 'admin' && user.password === 'admin') {
-            router.push('/profile')
-        } else {
-            alert('Usuário ou senha inválidos')
+    const handleLogin = () => {
+        if (!user || user.email == '' || user.password == '') {
+            alert('Digite se email e senha')
+            return
         }
+        const auth = initializeAuth(firebaseApp)
+        signInWithEmailAndPassword(auth, user.email, user.password)
+            .then((userCredential) => {
+                SecureStore.setItemAsync('token', userCredential.user?.uid || '')
+                setUser(user)
+                router.push('home')
+            })
+            .catch(() => {
+                alert('Usuário ou senha inválidos!')
+            })
     }
 
     return (
-        <AuthContext.Provider value={{ user, handleLogin, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, handleLogin }}>
             {children}
         </AuthContext.Provider>
     )
 }
 
 export function useAuth() {
-    return useContext(AuthContext)
-} 
+    const context = useContext(AuthContext)
+    if (!context) {
+        throw new Error('useAuth deve ser usado dentro de um AuthProvider')
+    }
+    return context
+}   

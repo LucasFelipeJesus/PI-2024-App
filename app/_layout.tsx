@@ -5,9 +5,9 @@ import { AuthProvider } from "../context/auth"
 export default function Layout() {
     return (
         <PaperProvider>
-            <AuthProvider >
+            <AuthProvider>
                 <Slot />
             </AuthProvider>
-        </PaperProvider>
+        </PaperProvider >
     )
 }

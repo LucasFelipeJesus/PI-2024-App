@@ -1,12 +1,12 @@
 {
   "expo": {
-    "scheme": "PI-2024-App",
     "name": "PI-2024-App",
     "slug": "PI-2024-App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "PI-2024-App",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -26,7 +26,33 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-file-system",
+        {
+          "permissions": [
+            "CAMERA",
+            "READ_EXTERNAL_STORAGE",
+            "WRITE_EXTERNAL_STORAGE"
+          ]
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "permissions": [
+            "LOCATION"
+          ]
+        }
+      ]
     ]
   }
 }
