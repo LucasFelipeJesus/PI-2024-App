@@ -1,13 +1,16 @@
 import { Slot } from "expo-router"
 import { PaperProvider } from "react-native-paper"
 import { AuthProvider } from "../context/auth"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 
 export default function Layout() {
     return (
         <PaperProvider>
             <AuthProvider>
-                <Slot />
+                <SafeAreaProvider>
+                    <Slot />
+                </SafeAreaProvider>
             </AuthProvider>
-        </PaperProvider >
+        </PaperProvider>
     )
 }

@@ -1,18 +1,21 @@
 import { router } from "expo-router"
 import React, { createContext, ReactNode, useContext, useState } from "react"
-import { initializeAuth, signInWithEmailAndPassword } from "firebase/auth"
+import { initializeAuth, signInWithEmailAndPassword, signOut } from "firebase/auth"
 import firebaseApp from "../app/services/firebase"
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from "expo-secure-store"
 
 interface IUserLogin {
     email: string
     password: string
+    type?: string
+    error?: string
 }
 
 interface IAuthContext {
     user: IUserLogin
     setUser: (user: IUserLogin) => void
     handleLogin: () => void
+    handleLogout: () => void
 }
 
 interface IAuthProviderProps {
@@ -22,27 +25,38 @@ interface IAuthProviderProps {
 const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<IUserLogin>({ email: "", password: "" })
+    const [user, setUser] = useState<IUserLogin>({ email: "", password: "", type: "", error: "" })
 
     const handleLogin = () => {
-        if (!user || user.email == '' || user.password == '') {
-            alert('Digite se email e senha')
+        if (!user || user.email == "" || user.password == "") {
+            alert("Digite se email e senha")
+
             return
         }
         const auth = initializeAuth(firebaseApp)
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
-                SecureStore.setItemAsync('token', userCredential.user?.uid || '')
+                SecureStore.setItemAsync("token", userCredential.user?.uid || "")
                 setUser(user)
-                router.push('home')
+                router.push("teste")
             })
             .catch(() => {
-                alert('Usuário ou senha inválidos!')
+                alert("Usuário ou senha inválidos!")
             })
     }
 
+    const handleLogout = () => {
+        const auth = initializeAuth(firebaseApp)
+        SecureStore.deleteItemAsync("token")
+        user.email = ""
+        user.password = ""
+        user.type = ""
+        signOut(auth)
+        router.push("./")
+    }
+
     return (
-        <AuthContext.Provider value={{ user, setUser, handleLogin }}>
+        <AuthContext.Provider value={{ user, setUser, handleLogin, handleLogout }}>
             {children}
         </AuthContext.Provider>
     )
@@ -51,7 +65,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 export function useAuth() {
     const context = useContext(AuthContext)
     if (!context) {
-        throw new Error('useAuth deve ser usado dentro de um AuthProvider')
+        throw new Error("useAuth deve ser usado dentro de um AuthProvider")
     }
     return context
-}   
+}
