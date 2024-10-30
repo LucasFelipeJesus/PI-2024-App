@@ -14,7 +14,8 @@ export default function Welcome() {
     useEffect(() => {
         async function getToken() {
             const token = await SecureStore.getItemAsync("token")
-            if (token) router.push("teste")
+            // direcionar para a tela correta
+            if (token) router.push("provider")
             return
         }
         getToken()
@@ -35,7 +36,7 @@ export default function Welcome() {
                     style={styles.gotocustomer}
                     activeOpacity={0.7}
                     onPress={() => {
-                        router.push("login")
+                        router.push("login?type=customer")
                     }}
                 >
                     <View style={styles.cover}>
@@ -54,7 +55,7 @@ export default function Welcome() {
                     style={styles.gotoprovider}
                     activeOpacity={0.7}
                     onPress={() => {
-                        router.push("login")
+                        router.push("login?type=provider")
                     }}
                 >
                     <View style={styles.cover}>

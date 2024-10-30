@@ -8,7 +8,6 @@ interface IUserLogin {
     email: string
     password: string
     type?: string
-    error?: string
 }
 
 interface IAuthContext {
@@ -25,12 +24,11 @@ interface IAuthProviderProps {
 const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<IUserLogin>({ email: "", password: "", type: "", error: "" })
+    const [user, setUser] = useState<IUserLogin>({ email: "", password: "", type: "" })
 
     const handleLogin = () => {
         if (!user || user.email == "" || user.password == "") {
-            alert("Digite se email e senha")
-
+            alert("Digite seu email e senha")
             return
         }
         const auth = initializeAuth(firebaseApp)
@@ -38,7 +36,8 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
             .then((userCredential) => {
                 SecureStore.setItemAsync("token", userCredential.user?.uid || "")
                 setUser(user)
-                router.push("teste")
+                const userType = user.type as string
+                router.push(userType)
             })
             .catch(() => {
                 alert("Usuário ou senha inválidos!")
@@ -52,7 +51,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         user.password = ""
         user.type = ""
         signOut(auth)
-        router.push("./")
+        router.push("../")
     }
 
     return (

@@ -3,10 +3,11 @@ import { Text } from "react-native-paper"
 import { Button } from "react-native-paper"
 import { router } from "expo-router"
 
-export default function Home() {
+
+export default function Configuration() {
   return (
     <View style={styles.container}>
-      <Text variant="displaySmall">Tab Home</Text>
+      <Text variant="displaySmall">Tab Configuration</Text>
       <Button mode="elevated" style={styles.mt20} onPress={() => router.replace('home')}>
         Voltar para Home
       </Button>
