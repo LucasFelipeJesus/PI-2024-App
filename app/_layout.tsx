@@ -1,4 +1,4 @@
-import { Slot } from "expo-router"
+import { Slot, Stack } from "expo-router"
 import { PaperProvider } from "react-native-paper"
 import { AuthProvider } from "../context/auth"
 import { SafeAreaProvider } from "react-native-safe-area-context"

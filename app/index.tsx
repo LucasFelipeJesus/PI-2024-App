@@ -11,15 +11,15 @@ import Logo from "./components/logo"
 import { useEffect } from "react"
 
 export default function Welcome() {
-    useEffect(() => {
-        async function getToken() {
-            const token = await SecureStore.getItemAsync("token")
-            // direcionar para a tela correta
-            if (token) router.push("provider")
-            return
-        }
-        getToken()
-    }, [])
+    // useEffect(() => {
+    //     async function getToken() {
+    //         const token = await SecureStore.getItemAsync("token")
+    //         // direcionar para a tela correta
+    //         if (token) router.push("provider")
+    //         return
+    //     }
+    //     getToken()
+    // }, [])
 
     return (
         <SafeAreaView style={styles.container}>

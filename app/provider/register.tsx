@@ -1,32 +1,34 @@
-import { View, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from "react-native"
+import {
+    View,
+    StyleSheet,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    TouchableOpacity,
+} from "react-native"
 import { TextInput, Text, Appbar } from "react-native-paper"
-import { useAuth } from "../context/auth"
+import { useAuth } from "../../context/auth"
 import * as SecureStore from "expo-secure-store"
 import { useEffect, useState } from "react"
 import { useLocalSearchParams, router } from "expo-router"
 
-import { colors } from "./colors/colors"
-import Button from "./components/button"
+import { colors } from "../colors/colors"
+import Button from "../components/button"
 
-export default function Login() {
-    const params = useLocalSearchParams<{ type?: string }>()
+export default function Register() {
     const auth = useAuth()
     const [token, setToken] = useState("")
-    const [userType, setUserType] = useState("")
 
     useEffect(() => {
         async function getToken() {
             const token = await SecureStore.getItemAsync("token")
-            setUserType(params.type as string)
-            auth.setUser({ ...auth.user, type: params.type as string })
             if (token) setToken(token)
-            if (token) router.push(userType)
             return
         }
         getToken()
     }, [])
 
-    const userTypeName = userType === "customer" ? "Cliente" : "Churrasqueiro"
+    const userTypeName = "Churrasqueiro"
 
     return (
         <SafeAreaView style={styles.container}>
@@ -50,7 +52,9 @@ export default function Login() {
                         underlineColor="transparent"
                         mode="outlined"
                         style={styles.input}
-                        onChangeText={(text) => auth.setUser({ ...auth.user, email: text })}
+                        onChangeText={(text) =>
+                            auth.setUser({ ...auth.user, email: text, type: userType })
+                        }
                     />
                     <TextInput
                         label="Senha"
@@ -68,7 +72,7 @@ export default function Login() {
                         <Text>Ainda não tem uma conta? </Text>
                         <TouchableOpacity
                             onPress={() => {
-                                router.push("../provider/register")
+                                router.push("./signup")
                             }}
                         >
                             <Text style={styles.link}>Cadastre-se</Text>
