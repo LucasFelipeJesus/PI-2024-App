@@ -36,7 +36,8 @@ export default function Welcome() {
                     style={styles.gotocustomer}
                     activeOpacity={0.7}
                     onPress={() => {
-                        router.push("login?type=customer")
+                        // router.push("login?type=customer")
+                        router.push("customer")
                     }}
                 >
                     <View style={styles.cover}>
