@@ -7,6 +7,7 @@ import { Button } from "react-native-paper"
 import { router } from "expo-router"
 import * as SecureStore from "expo-secure-store"
 import { SafeAreaView } from "react-native-safe-area-context"
+import CatalogoProfissionais from "../components/catalogo_professionals"
 
 export default function Teste() {
     const auth = useAuth()
@@ -21,11 +22,18 @@ export default function Teste() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
+            <View>
+
+
                 <Text variant="displaySmall">Teste Customer</Text>
                 <Text variant="headlineSmall">Olá, {auth.user.email}</Text>
                 <Text variant="headlineSmall">Type: {auth.user.type}</Text>
                 <Text>Token: {token}</Text>
+
+                <Text variant="displayMedium">Catalogo de Profissionais</Text>
+
+                <CatalogoProfissionais />
+
                 <Button
                     mode="elevated"
                     style={styles.mt20}
@@ -33,12 +41,12 @@ export default function Teste() {
                         router.push("./")
                     }}
                 >
-                    Welcome
+                    Welcomes
                 </Button>
                 <Button mode="elevated" style={styles.mt20} onPress={auth.handleLogout}>
                     Logout
                 </Button>
-            </ScrollView>
+            </View>
         </SafeAreaView>
     )
 }
