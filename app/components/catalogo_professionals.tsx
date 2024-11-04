@@ -14,20 +14,23 @@ const CatalogoProfissionais = () => {
     const [profissionais, setProfissionais] = useState<Professional[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('https://api-bckend.onrender.com/api/professional'); // Substitua pela URL real da sua API
-                const data = await response.json();
-                setProfissionais(data); // A API deve retornar uma lista de profissionais
-            } catch (error) {
-                console.error('Erro ao buscar os profissionais:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://api-bckend.onrender.com/api/professional');
+            const data = await response.json();
+            setProfissionais(data);
+        } catch (error) {
+            console.error('Erro ao buscar os profissionais:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
+        const intervalId = setInterval(fetchData, 10000); // Atualiza a cada 10 segundos
+
+        return () => clearInterval(intervalId); // Limpa o intervalo ao desmontar o componente
     }, []);
 
     if (loading) {
@@ -56,35 +59,35 @@ const CatalogoProfissionais = () => {
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 20,
-        paddingHorizontal: 10,
-    },
-    loading: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        paddingHorizontal: 5,
     },
     card: {
-        width: Dimensions.get('window').width / 3.5, // Divisão da largura da tela para cada card
-        margin: 8,
+        width: Dimensions.get('window').width / 3 - 10,
+        margin: 1,
         backgroundColor: '#f8f8f8',
         borderRadius: 10,
         overflow: 'hidden',
     },
     cardImage: {
-        height: 150,
+        height: 120,
     },
     cardContent: {
         alignItems: 'center',
         paddingVertical: 5,
     },
     cardName: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'bold',
         color: '#444',
     },
     cardCity: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#666',
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
