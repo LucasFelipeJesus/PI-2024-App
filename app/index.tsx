@@ -1,26 +1,14 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router } from "expo-router"
-import { Button, Text } from "react-native-paper"
+import { Text } from "react-native-paper"
 import { Icon } from "react-native-paper"
-import * as SecureStore from "expo-secure-store"
 
 import { colors } from "./colors/colors"
-import { styles } from "./styles"
 import Logo from "./components/logo"
-import { useEffect } from "react"
+import Background from "./components/background"
 
 export default function Welcome() {
-    // useEffect(() => {
-    //     async function getToken() {
-    //         const token = await SecureStore.getItemAsync("token")
-    //         // direcionar para a tela correta
-    //         if (token) router.push("provider")
-    //         return
-    //     }
-    //     getToken()
-    // }, [])
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logo}>
@@ -43,7 +31,7 @@ export default function Welcome() {
                     <View style={styles.cover}>
                         <Text style={styles.subtitle1}>Sou Cliente</Text>
                         <Text style={styles.textwhite}>
-                            Quero contratar um churrasqueiro para o seu evento.
+                            Quero contratar um churrasqueiro para o meu evento.
                         </Text>
                     </View>
                     <View style={styles.icon1}>
@@ -56,7 +44,8 @@ export default function Welcome() {
                     style={styles.gotoprovider}
                     activeOpacity={0.7}
                     onPress={() => {
-                        router.push("login?type=provider")
+                        // router.push("login?type=provider")
+                        router.push("signin")
                     }}
                 >
                     <View style={styles.cover}>
@@ -71,3 +60,78 @@ export default function Welcome() {
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    logo: {
+        alignItems: "center",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginTop: 20,
+    },
+    touchable: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    gotocustomer: {
+        width: "100%",
+        height: 150,
+        backgroundColor: colors.blue[200],
+        marginTop: 20,
+        justifyContent: "center",
+        padding: 20,
+        borderRadius: 10,
+    },
+    gotoprovider: {
+        width: "100%",
+        height: 150,
+        backgroundColor: colors.yellow[300],
+        marginTop: 20,
+        justifyContent: "center",
+        padding: 20,
+        borderRadius: 10,
+    },
+    cover: {
+        width: "60%",
+    },
+    icon1: {
+        flex: 1,
+        height: 150,
+        width: "40%",
+        position: "absolute",
+        right: 0,
+        backgroundColor: colors.blue[100],
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    icon2: {
+        flex: 1,
+        height: 150,
+        width: "40%",
+        position: "absolute",
+        right: 0,
+        backgroundColor: colors.yellow[200],
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    subtitle1: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: colors.white,
+    },
+    subtitle2: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: colors.black,
+    },
+    textwhite: {
+        color: colors.white,
+    },
+})
