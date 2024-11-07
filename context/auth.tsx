@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         user.password = ""
         user.type = ""
         signOut(auth)
-        router.push("../")
+        router.push("../../")
     }
 
     return (

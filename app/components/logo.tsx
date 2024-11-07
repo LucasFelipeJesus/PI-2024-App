@@ -2,17 +2,13 @@ import { StyleSheet } from "react-native"
 import { Image } from "react-native"
 
 export default function Logo() {
-    return <Image source={require("../../assets/logo.png")} style={styles.logo} />
+    return <Image source={require("../../assets/logo.png")} style={styles.image} />
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    logo: {
+    image: {
+        width: 200,
+        height: 200,
         marginBottom: 8,
-        width: 300,
-        height: 300,
     },
 })

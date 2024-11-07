@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <View style={styles.container}>
             <Text variant="displaySmall">Provider Home</Text>
-            <Button mode="elevated" style={styles.mt20} onPress={() => router.replace("home")}>
+            <Button mode="elevated" style={styles.mt20} onPress={() => router.replace("../../")}>
                 Voltar para Home
             </Button>
             <Button mode="elevated" style={styles.mt20} onPress={auth.handleLogout}>
