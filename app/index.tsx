@@ -45,6 +45,7 @@ export default function Welcome() {
                     activeOpacity={0.7}
                     onPress={() => {
                         // router.push("login?type=provider")
+                        // router.push("provider")
                         router.push("signin")
                     }}
                 >

@@ -1,8 +1,9 @@
 import { Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { router } from "expo-router"
 import { StyleSheet } from "react-native"
+import { useAuth } from "../context/auth"
 
 import { colors } from "./colors/colors"
 import { EmailValidator } from "./utils/emailValidator"
@@ -14,18 +15,28 @@ import BackButton from "./components/backbutton"
 import TextInput from "./components/textinput"
 
 export default function SignIn() {
+    const auth = useAuth()
     const [email, setEmail] = useState({ value: "", error: "" })
     const [password, setPassword] = useState({ value: "", error: "" })
 
     const onLoginPressed = () => {
         const emailError = EmailValidator(email.value)
         const passwordError = PasswordValidator(password.value)
-        // if (emailError || passwordError) {
-        //     setEmail({ ...email, error: emailError })
-        //     setPassword({ ...password, error: passwordError })
-        //     return
-        // }
-        router.push("provider")
+        if (emailError || passwordError) {
+            setEmail({ ...email, error: emailError })
+            setPassword({ ...password, error: passwordError })
+            return
+        }
+
+        // Verificar porque o usuário, senha e tipo não estão sendo preenchidos com o auth.setUser
+        auth.setUser({ email: email.value, password: password.value, type: "provider" })
+
+        if (!auth.user || auth.user.email == "" || auth.user.password == "") {
+            alert("Verificar: email e senha")
+            return
+        } else {
+            auth.handleLogin()
+        }
     }
 
     return (
@@ -42,13 +53,13 @@ export default function SignIn() {
                     error={!!email.error}
                     errorText={email.error}
                     autoCapitalize="none"
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
+                    autoComplete="email"
+                    autoCorrect={false}
                     keyboardType="email-address"
                 />
                 <TextInput
                     label="Senha"
-                    returnKeyType="done"
+                    returnKeyType="next"
                     value={password.value}
                     onChangeText={(text: string) => setPassword({ value: text, error: "" })}
                     error={!!password.error}

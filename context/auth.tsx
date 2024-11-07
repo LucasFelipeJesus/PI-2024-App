@@ -1,8 +1,14 @@
 import { router } from "expo-router"
-import React, { createContext, ReactNode, useContext, useState } from "react"
-import { initializeAuth, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import {
+    createUserWithEmailAndPassword,
+    initializeAuth,
+    signInWithEmailAndPassword,
+    signOut,
+} from "firebase/auth"
 import firebaseApp from "../app/services/firebase"
 import * as SecureStore from "expo-secure-store"
+import SignUp from "@/app/signup"
 
 interface IUserLogin {
     email: string
@@ -14,6 +20,7 @@ interface IAuthContext {
     user: IUserLogin
     setUser: (user: IUserLogin) => void
     handleLogin: () => void
+    handleSignup: () => void
     handleLogout: () => void
 }
 
@@ -35,9 +42,40 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 SecureStore.setItemAsync("token", userCredential.user?.uid || "")
+                SecureStore.setItemAsync("email", user?.email || "")
+                SecureStore.setItemAsync("type", user?.type || "")
                 setUser(user)
                 const userType = user.type as string
-                router.push(userType)
+                router.replace(userType)
+            })
+            .catch(() => {
+                alert("Usuário ou senha inválidos!")
+            })
+    }
+
+    const handleSignup = () => {
+        if (!user || user.email == "" || user.password == "") {
+            alert("Digite seu email e senha")
+            return
+        }
+        const auth = initializeAuth(firebaseApp)
+        createUserWithEmailAndPassword(auth, user.email, user.password)
+            .then((userCredential) => {
+                SecureStore.setItemAsync("token", userCredential.user?.uid || "")
+                SecureStore.setItemAsync("email", user?.email || "")
+                SecureStore.setItemAsync("type", user?.type || "")
+                setUser(user)
+                const userType = user.type as string
+
+                // Buscar o cadastro do usuário no banco de dados da API
+                useEffect(() => {
+                    fetch("https://jsonplaceholder.org/posts")
+                        .then((response) => response.json())
+                        .then((json) => setPosts(json))
+                }, [])
+                // Se o usuário for encontrado, redirecionar para a tela de Home
+                router.replace(userType)
+                // caso contrário, redirecionar para a tela de cadastro
             })
             .catch(() => {
                 alert("Usuário ou senha inválidos!")
@@ -47,15 +85,18 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     const handleLogout = () => {
         const auth = initializeAuth(firebaseApp)
         SecureStore.deleteItemAsync("token")
-        user.email = ""
-        user.password = ""
-        user.type = ""
+        SecureStore.deleteItemAsync("email")
+        SecureStore.deleteItemAsync("type")
+        setUser({ email: "", password: "", type: "" })
+        // user.email = ""
+        // user.password = ""
+        // user.type = ""
         signOut(auth)
         router.push("../../")
     }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, handleLogin, handleLogout }}>
+        <AuthContext.Provider value={{ user, setUser, handleLogin, handleSignup, handleLogout }}>
             {children}
         </AuthContext.Provider>
     )
