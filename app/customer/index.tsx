@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { Text, Button, Divider } from "react-native-paper";
 import { useAuth } from "../../context/auth";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -22,34 +22,31 @@ export default function Teste() {
 
     return (
         <SafeAreaView style={styles.container}>
-
-            <Text variant="displaySmall">Teste Customer</Text>
-
             {auth.user && (
-                <>
-                    <Text variant="headlineSmall">Olá, {auth.user.email}</Text>
-                    <Text variant="headlineSmall">Type: {auth.user.type}</Text>
-                </>
+                <View style={styles.userInfo}>
+                    <Text style={styles.welcomeText}>Olá, {auth.user.email}</Text>
+                    <Text style={styles.userType}>Tipo: {auth.user.type}</Text>
+                </View>
             )}
 
-            <Text>Token: {token}</Text>
-
-            <Text variant="displayMedium">Catálogo de Profissionais</Text>
+            <Divider style={styles.divider} />
+            <Text style={styles.tokenText}>Token: {token}</Text>
+            <Text style={styles.catalogTitle}>Catálogo de Profissionais</Text>
 
             <CatalogoProfissionais />
 
-            <Button
-                mode="elevated"
-                style={styles.mt20}
-                onPress={() => router.push("/")}
-            >
-                Main Page
-            </Button>
-
-            <Button mode="elevated" style={styles.mt20} onPress={auth.handleLogout}>
-                Logout
-            </Button>
-
+            <View style={styles.buttonContainer}>
+                <Button
+                    mode="elevated"
+                    style={styles.button}
+                    onPress={() => router.push("/")}
+                >
+                    Página Principal
+                </Button>
+                <Button mode="elevated" style={styles.button} onPress={auth.handleLogout}>
+                    Logout
+                </Button>
+            </View>
         </SafeAreaView>
     );
 }
@@ -57,10 +54,43 @@ export default function Teste() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#f9f9f9",
         padding: 20,
     },
-    mt20: {
+    userInfo: {
+        marginBottom: 20,
+    },
+    welcomeText: {
+        fontSize: 20,
+        fontWeight: "600",
+        color: "#333",
+    },
+    userType: {
+        fontSize: 16,
+        color: "#666",
+    },
+    divider: {
+        marginVertical: 10,
+        backgroundColor: "#ddd",
+    },
+    tokenText: {
+        fontSize: 14,
+        color: "#888",
+        marginBottom: 20,
+    },
+    catalogTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#333",
+        marginBottom: 15,
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginTop: 20,
+    },
+    button: {
+        flex: 1,
+        marginHorizontal: 5,
     },
 });

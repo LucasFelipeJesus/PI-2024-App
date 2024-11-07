@@ -44,7 +44,7 @@ const CatalogoProfissionais = () => {
             contentContainerStyle={styles.container}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-                <Card style={styles.card} onPress={() => console.log('Detalhes do profissional:', item._id)}>
+                <Card style={styles.card} onPress={() => console.log('Detalhes do profissional:', item.name)}>
                     <Card.Cover source={{ uri: item.Image || 'https://via.placeholder.com/150' }} style={styles.cardImage} />
                     <Card.Content style={styles.cardContent}>
                         <Title style={styles.cardName}>{item.name}</Title>
