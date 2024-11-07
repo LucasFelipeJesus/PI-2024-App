@@ -44,7 +44,7 @@ const CatalogoProfissionais = () => {
             contentContainerStyle={styles.container}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-                <Card style={styles.card}>
+                <Card style={styles.card} onPress={() => console.log('Detalhes do profissional:', item._id)}>
                     <Card.Cover source={{ uri: item.Image || 'https://via.placeholder.com/150' }} style={styles.cardImage} />
                     <Card.Content style={styles.cardContent}>
                         <Title style={styles.cardName}>{item.name}</Title>
@@ -59,24 +59,26 @@ const CatalogoProfissionais = () => {
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 20,
-        paddingHorizontal: 5,
+        paddingHorizontal: 3,
     },
     card: {
         width: Dimensions.get('window').width / 3 - 10,
         margin: 1,
         backgroundColor: '#f8f8f8',
-        borderRadius: 10,
+        borderRadius: 5,
         overflow: 'hidden',
     },
     cardImage: {
-        height: 120,
+        height: 180,
+
     },
     cardContent: {
         alignItems: 'center',
-        paddingVertical: 5,
+        paddingVertical: 7,
+        paddingHorizontal: 5,
     },
     cardName: {
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: 'bold',
         color: '#444',
     },

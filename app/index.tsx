@@ -43,7 +43,7 @@ export default function Welcome() {
                     <View style={styles.cover}>
                         <Text style={styles.subtitle1}>Sou Cliente</Text>
                         <Text style={styles.textwhite}>
-                            Quero contratar um churrasqueiro para o seu evento.
+                            Quero contratar um churrasqueiro para o meu evento.
                         </Text>
                     </View>
                     <View style={styles.icon1}>
