@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 
 export default function Tab() {
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState<null | 'service' | 'professional'>(null);
 
     return (
         <View style={styles.container}>
