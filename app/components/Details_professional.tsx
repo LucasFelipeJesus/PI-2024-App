@@ -1,88 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
+const DetailsProfessional = () => {
+    const route = useRoute();
+    const { token } = route.params as { token: string };  // Pegando o token (ID) do profissional passado pela navegação
 
-import { RouteProp } from '@react-navigation/native';
-
-type RouteParams = {
-    params: {
-        profissionalId: string;
-    };
-};
-
-type Profissional = {
-    Image: string;
-    name: string;
-    city: string;
-    state: string;
-    email: string;
-    phone: string;
-};
-
-const DetalhesProfissional = ({ route }: { route: RouteProp<RouteParams, 'params'> }) => {
-    const { profissionalId } = route.params;
-    const [profissional, setProfissional] = useState<Profissional | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [professional, setProfessional] = useState<any>(null);  // Estado para armazenar os dados
+    const [loading, setLoading] = useState(true);  // Indicador de carregamento
 
     useEffect(() => {
         const fetchProfessionalDetails = async () => {
             try {
-                const response = await fetch(`https://api-bckend.onrender.com/api/professional/${profissionalId}`);
+                const response = await fetch(`https://api-bckend.onrender.com/api/professional/${token}`);
                 const data = await response.json();
-                setProfissional(data);
+                setProfessional(data);  // Armazenar os dados do profissional
             } catch (error) {
-                console.error('Erro ao buscar detalhes do profissional:', error);
+                console.error('Erro ao buscar os detalhes do profissional:', error);
             } finally {
-                setLoading(false);
+                setLoading(false);  // Finaliza o carregamento
             }
         };
 
-        fetchProfessionalDetails();
-    }, [profissionalId]);
+        fetchProfessionalDetails();  // Chama a função de buscar dados
+    }, [token]);  // Refaz a busca caso o token mude
 
     if (loading) {
         return <ActivityIndicator animating={true} size="large" style={styles.loading} />;
     }
 
-    if (!profissional) {
-        return <Text style={styles.error}>Não foi possível carregar os detalhes.</Text>;
+    if (!professional) {
+        return <Text style={styles.error}>Profissional não encontrado.</Text>;
     }
 
     return (
         <View style={styles.container}>
-            <Image source={{ uri: profissional.Image || 'https://via.placeholder.com/150' }} style={styles.image} />
-            <Text style={styles.name}>{profissional.name}</Text>
-            <Text style={styles.details}>Cidade: {profissional.city}</Text>
-            <Text style={styles.details}>Estado: {profissional.state}</Text>
-            <Text style={styles.details}>Email: {profissional.email}</Text>
-            <Text style={styles.details}>Telefone: {profissional.phone}</Text>
-            {/* Adicione mais detalhes conforme necessário */}
+            <Text style={styles.name}>{professional.name}</Text>
+            <Text>CPF: {professional.cpf}</Text>
+            <Text>Email: {professional.email}</Text>
+            <Text>Telefone: {professional.phone}</Text>
+            <Text>Endereço: {professional.address}</Text>
+            <Text>Cidade: {professional.city}</Text>
+            <Text>Estado: {professional.state}</Text>
+            <Text>Especialidades: {professional.especialidades}</Text>
+            {/* Renderizar outros detalhes conforme necessário */}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 20,
-        alignItems: 'center',
         backgroundColor: '#fff',
-    },
-    image: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginBottom: 15,
+        flex: 1,
     },
     name: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
-    },
-    details: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
     },
     loading: {
         flex: 1,
@@ -90,9 +65,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     error: {
-        textAlign: 'center',
         color: 'red',
+        textAlign: 'center',
+        fontSize: 16,
     },
 });
 
-export default DetalhesProfissional;
+export default DetailsProfessional;
