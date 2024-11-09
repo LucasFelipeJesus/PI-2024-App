@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Text, Button, Divider } from "react-native-paper";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
