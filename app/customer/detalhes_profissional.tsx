@@ -70,7 +70,6 @@ const DetailsProfessional = () => {
                 )}
                 <View style={styles.card}>
                     <Text style={styles.name}>{professional.name}</Text>
-                    <Text style={styles.field}>CPF: <Text style={styles.value}>{professional.cpf}</Text></Text>
                     <Text style={styles.field}>Email: <Text style={styles.value}>{professional.email}</Text></Text>
                     <Text style={styles.field}>Telefone:
                         <View style={styles.phoneContainer}>
