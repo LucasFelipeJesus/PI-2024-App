@@ -17,10 +17,6 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => <FontAwesome size={28} name="list-alt" color={color} />,
                 }}
             />
-
-
-
-
         </Tabs>
     )
 }
