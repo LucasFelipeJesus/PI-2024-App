@@ -1,26 +1,20 @@
 import React, { useState } from "react"
-import { Text } from "react-native-paper"
+import { Text, ActivityIndicator, TextInput } from "react-native-paper"
 import { router } from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { StyleSheet } from "react-native"
 
-import { colors } from "./colors/colors"
-import { NameValidator } from "./utils/nameValidator"
-import Background from "./components/background"
-import BackButton from "./components/backbutton"
-import TextInput from "./components/textinput"
-import Button from "./components/button"
+import { colors } from "../colors/colors"
+import { NameValidator } from "../utils/nameValidator"
+import Background from "../components/background"
+import BackButton from "../components/backbutton"
+import Button from "../components/button"
 
-export default function Register() {
-    const [description, setDescription] = useState({ value: "", error: "" })
+export default function Services() {
+    const [description, setDescription] = useState("")
 
     const onSignUpPressed = () => {
-        const descriptionError = NameValidator(description.value)
-        // if (descriptionError) {
-        //     setDescription({ ...description, error: descriptionError })
-        //     return
-        // }
-        router.push("welcome")
+        router.push("provider/welcome")
     }
 
     return (
@@ -36,11 +30,12 @@ export default function Register() {
                 <TextInput
                     label="Descrição dos Serviços"
                     returnKeyType="next"
-                    value={description.value}
-                    onChangeText={(text: string) => setDescription({ value: text, error: "" })}
-                    error={!!description.error}
-                    errorText={description.error}
+                    keyboardType="default"
+                    underlineColor="transparent"
+                    mode="outlined"
+                    style={styles.input}
                     multiline={true}
+                    onChangeText={(text) => setDescription(text)}
                 />
                 <Button mode="contained" onPress={onSignUpPressed} style={{ marginTop: 24 }}>
                     Finalizar o cadastro
@@ -68,6 +63,12 @@ const styles = StyleSheet.create({
         fontSize: 15,
         lineHeight: 21,
         marginBottom: 12,
+    },
+    input: {
+        width: "100%",
+        marginTop: 10,
+        backgroundColor: colors.white,
+        fontSize: 14,
     },
     forgotPassword: {
         width: "100%",
