@@ -3,11 +3,11 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { router } from "expo-router"
 import { StyleSheet } from "react-native"
 
-import { colors } from "./colors/colors"
-import Background from "./components/background"
-import Logo from "./components/logo"
-import Button from "./components/button"
-import BackButton from "./components/backbutton"
+import { colors } from "../colors/colors"
+import Background from "../components/background"
+import Logo from "../components/logo"
+import Button from "../components/button"
+import BackButton from "../components/backbutton"
 
 export default function Welcome() {
     return (
@@ -23,7 +23,7 @@ export default function Welcome() {
                 <Button
                     mode="contained"
                     onPress={() => {
-                        router.push("provider")
+                        router.push("provider/(tabs)")
                     }}
                 >
                     Continuar

@@ -33,7 +33,7 @@ export default function Teste() {
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <Text variant="displaySmall">Teste</Text>
                 <Text variant="headlineSmall">Olá, {auth.user.email}</Text>
-                <Text variant="headlineSmall">Type: {auth.user.type}</Text>
+                {/* <Text variant="headlineSmall">Type: {auth.user.type}</Text> */}
                 <Text>Token: {token}</Text>
                 <Button
                     mode="contained"
