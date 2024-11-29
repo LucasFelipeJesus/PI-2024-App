@@ -12,8 +12,8 @@ import Logo from "../components/logo"
 
 export default function Account() {
     const auth = useAuth()
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    // const [email, setEmail] = useState()
+    // const [password, setPassword] = useState()
 
     return (
         <SafeAreaView style={styles.container}>

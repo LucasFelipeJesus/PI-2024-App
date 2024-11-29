@@ -5,41 +5,53 @@ import {
     initializeAuth,
     signInWithEmailAndPassword,
     signOut,
+    UserCredential,
 } from "firebase/auth"
 import firebaseApp from "../app/services/firebase"
 import * as SecureStore from "expo-secure-store"
 
-interface IUserLogin {
+interface UserLogin {
     email: string
     password: string
 }
 
-interface IUserProfile {
+interface UserProfile {
     name?: string
-    image?: string
+    cpf?: string
+    email?: string
+    phone?: string
+    cep?: string
+    address?: string
+    bairro?: string
+    city?: string
+    state?: string
+    Image?: string
+    token?: string
+    especialities?: string
+    services?: string[]
 }
 
-interface IAuthContext {
-    user: IUserLogin
-    professional: IUserProfile | null
-    setUser: (user: IUserLogin) => void
+interface AuthContextType {
+    user: UserLogin
+    professional: UserProfile | null
+    setUser: React.Dispatch<React.SetStateAction<UserLogin>>
     handleLogin: () => Promise<void>
     handleSignup: () => Promise<void>
-    handleLogout: () => void
+    handleLogout: () => Promise<void>
 }
 
-interface IAuthProviderProps {
+interface AuthProviderProps {
     children: ReactNode
 }
 
-const AuthContext = createContext<IAuthContext>({} as IAuthContext)
+const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
-export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<IUserLogin>({ email: "", password: "" })
-    const [professional, setProfessional] = useState<IUserProfile | null>(null)
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+    const [user, setUser] = useState<UserLogin>({ email: "", password: "" })
+    const [professional, setProfessional] = useState<UserProfile | null>(null)
     const [token, setToken] = useState<string>("")
 
-    const fetchProfessional = async (userId: string) => {
+    const fetchProfessional = async (userId: string): Promise<UserProfile | null> => {
         if (!userId) return null
 
         try {
@@ -51,7 +63,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
                 throw new Error("Falha ao obter detalhes do profissional")
             }
 
-            const data = await response.json()
+            const data: UserProfile = await response.json()
             setProfessional(data)
 
             // Safely store profile information
@@ -65,7 +77,44 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         }
     }
 
-    const handleLogin = async () => {
+    const postProfessional = async (
+        userId: string,
+        userEmail: string
+    ): Promise<UserProfile | null> => {
+        if (!userId) return null
+
+        try {
+            const response = await fetch("https://api-bckend.onrender.com/api/professional", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: userEmail,
+                    token: userId,
+                    services: professional?.services,
+                }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Falha ao obter detalhes do profissional")
+            }
+
+            const data: UserProfile = await response.json()
+            setProfessional(data)
+
+            // Safely store profile information
+            await SecureStore.setItemAsync("email", data?.email || "")
+            await SecureStore.setItemAsync("token", data?.token || "")
+
+            return data
+        } catch (error) {
+            console.error("Erro ao inserir o profissional:", error)
+            return null
+        }
+    }
+
+    const handleLogin = async (): Promise<void> => {
         // Input validation
         if (!user.email || !user.password) {
             alert("Por favor, digite seu e-mail e senha")
@@ -74,7 +123,11 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
         try {
             const auth = initializeAuth(firebaseApp)
-            const userCredential = await signInWithEmailAndPassword(auth, user.email, user.password)
+            const userCredential: UserCredential = await signInWithEmailAndPassword(
+                auth,
+                user.email,
+                user.password
+            )
             const userId = userCredential.user?.uid || ""
 
             // Store token and email
@@ -93,7 +146,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         }
     }
 
-    const handleSignup = async () => {
+    const handleSignup = async (): Promise<void> => {
         // Input validation
         if (!user.email || !user.password) {
             alert("Por favor, digite seu e-mail e senha")
@@ -102,7 +155,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
         try {
             const auth = initializeAuth(firebaseApp)
-            const userCredential = await createUserWithEmailAndPassword(
+            const userCredential: UserCredential = await createUserWithEmailAndPassword(
                 auth,
                 user.email,
                 user.password
@@ -113,6 +166,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
             await SecureStore.setItemAsync("token", userId)
             await SecureStore.setItemAsync("email", user.email)
 
+            // Post professional
+            await postProfessional(userId, user.email)
+
             // Redirect to registration page
             router.replace("provider/register")
         } catch (error) {
@@ -121,7 +177,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         }
     }
 
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         try {
             const auth = initializeAuth(firebaseApp)
 
@@ -157,7 +213,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     )
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
     const context = useContext(AuthContext)
     if (!context) {
         throw new Error("useAuth deve ser usado dentro de um AuthProvider")
