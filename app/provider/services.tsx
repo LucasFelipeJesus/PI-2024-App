@@ -54,6 +54,11 @@ export default function Services() {
 
         if (!result.canceled) {
             setImage(`data:image/jpeg;base64,${result.assets[0].base64}`)
+            // Safely image profile information
+            await SecureStore.setItemAsync(
+                "image",
+                `data:image/jpeg;base64,${result.assets[0].base64}` || ""
+            )
         }
     }
 
@@ -68,6 +73,11 @@ export default function Services() {
 
         if (!result.canceled) {
             setImage(`data:image/jpeg;base64,${result.assets[0].base64}`)
+            // Safely image profile information
+            await SecureStore.setItemAsync(
+                "image",
+                `data:image/jpeg;base64,${result.assets[0].base64}` || ""
+            )
         }
     }
 

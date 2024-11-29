@@ -188,6 +188,7 @@ export default function Register() {
         try {
             const dataSaved = await saveProfessionalData()
             if (dataSaved) {
+                await SecureStore.setItemAsync("name", name || "")
                 router.push("provider/services")
             }
         } catch (error) {
