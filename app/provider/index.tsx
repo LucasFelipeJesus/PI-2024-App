@@ -78,7 +78,7 @@ export default function Login() {
                     <TouchableOpacity
                         onPress={() => {
                             router.push("provider/account")
-                            // router.push("provider/register")
+                            // router.push("provider/services")
                         }}
                     >
                         <Text style={styles.link}>Cadastre-se</Text>
