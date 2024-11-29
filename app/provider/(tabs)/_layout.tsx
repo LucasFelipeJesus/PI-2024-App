@@ -18,28 +18,28 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="configuration"
+                name="available"
                 options={{
-                    title: "Configuração",
-                    tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
-                }}
-            />
-            <Tabs.Screen
-                name="sensors"
-                options={{
-                    title: "Sensores",
+                    title: "Pedidos Disponíveis",
                     tabBarIcon: ({ color }) => (
-                        <FontAwesome size={28} name="arrows" color={color} />
+                        <FontAwesome size={28} name="shopping-bag" color={color} />
                     ),
                 }}
             />
             <Tabs.Screen
-                name="camera"
+                name="myorders"
                 options={{
-                    title: "Camera",
+                    title: "Meus Pedidos",
                     tabBarIcon: ({ color }) => (
-                        <FontAwesome size={28} name="camera" color={color} />
+                        <FontAwesome size={28} name="shopping-cart" color={color} />
                     ),
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Minha Conta",
+                    tabBarIcon: ({ color }) => <FontAwesome size={28} name="user" color={color} />,
                 }}
             />
         </Tabs>

@@ -6,7 +6,6 @@ import { Icon } from "react-native-paper"
 
 import { colors } from "./colors/colors"
 import Logo from "./components/logo"
-import Background from "./components/background"
 
 export default function Welcome() {
     return (
@@ -24,7 +23,6 @@ export default function Welcome() {
                     style={styles.gotocustomer}
                     activeOpacity={0.7}
                     onPress={() => {
-                        // router.push("login?type=customer")
                         router.push("customer")
                     }}
                 >
@@ -44,9 +42,8 @@ export default function Welcome() {
                     style={styles.gotoprovider}
                     activeOpacity={0.7}
                     onPress={() => {
-                        // router.push("login?type=provider")
                         router.push("provider")
-                        // router.push("signin")
+                        // router.push("provider/(tabs)")
                     }}
                 >
                     <View style={styles.cover}>
