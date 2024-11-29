@@ -77,8 +77,8 @@ export default function Login() {
                     <Text>Ainda não tem uma conta? </Text>
                     <TouchableOpacity
                         onPress={() => {
-                            // router.push("provider/account")
-                            router.push("provider/register")
+                            router.push("provider/account")
+                            // router.push("provider/register")
                         }}
                     >
                         <Text style={styles.link}>Cadastre-se</Text>

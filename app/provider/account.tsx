@@ -12,8 +12,29 @@ import Logo from "../components/logo"
 
 export default function Account() {
     const auth = useAuth()
-    // const [email, setEmail] = useState()
-    // const [password, setPassword] = useState()
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleSignup = async () => {
+        setIsLoading(true)
+        try {
+            await auth.handleSignup()
+        } catch (error) {
+            console.error("Signup error:", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const renderLoadingOverlay = () => {
+        if (!isLoading) return null
+
+        return (
+            <View style={styles.loadingOverlay}>
+                <ActivityIndicator size="large" color={colors.blue[500]} />
+                <Text style={styles.loadingText}>Carregando...</Text>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -33,6 +54,7 @@ export default function Account() {
                     mode="outlined"
                     style={styles.input}
                     onChangeText={(text) => auth.setUser({ ...auth.user, email: text })}
+                    disabled={isLoading}
                 />
 
                 <TextInput
@@ -43,10 +65,16 @@ export default function Account() {
                     mode="outlined"
                     style={styles.input}
                     onChangeText={(text) => auth.setUser({ ...auth.user, password: text })}
+                    disabled={isLoading}
                 />
 
-                <Button mode="contained" onPress={auth.handleSignup} style={{ marginTop: 24 }}>
-                    Continuar
+                <Button
+                    mode="contained"
+                    onPress={handleSignup}
+                    style={{ marginTop: 24 }}
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Carregando..." : "Continuar"}
                 </Button>
 
                 <View style={styles.row}>
@@ -55,10 +83,13 @@ export default function Account() {
                         onPress={() => {
                             router.push("provider")
                         }}
+                        disabled={isLoading}
                     >
                         <Text style={styles.link}>Entrar</Text>
                     </TouchableOpacity>
                 </View>
+
+                {renderLoadingOverlay()}
             </Background>
         </SafeAreaView>
     )
@@ -105,5 +136,21 @@ const styles = StyleSheet.create({
     link: {
         fontWeight: "bold",
         color: colors.blue[300],
+    },
+    loadingOverlay: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        zIndex: 1000,
+    },
+    loadingText: {
+        marginTop: 10,
+        color: colors.blue[500],
+        fontSize: 16,
     },
 })

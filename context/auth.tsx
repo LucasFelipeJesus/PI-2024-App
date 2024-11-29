@@ -92,24 +92,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 body: JSON.stringify({
                     email: userEmail,
                     token: userId,
-                    services: professional?.services,
+                    services: professional?.services || [],
                 }),
             })
 
             if (!response.ok) {
-                throw new Error("Falha ao obter detalhes do profissional")
+                // Get more detailed error information
+                const errorBody = await response.text()
+                console.error(`HTTP error! status: ${response.status}, body: ${errorBody}`)
+
+                // More specific error handling based on status code
+                switch (response.status) {
+                    case 400:
+                        alert("Dados inválidos para registro do profissional")
+                        break
+                    case 409:
+                        alert("Profissional já existe")
+                        break
+                    case 500:
+                        alert("Erro interno do servidor. Tente novamente mais tarde.")
+                        break
+                    default:
+                        alert("Falha ao registrar a conta do profissional")
+                }
+
+                throw new Error(`Registration failed: ${response.status}`)
             }
 
             const data: UserProfile = await response.json()
             setProfessional(data)
 
-            // Safely store profile information
             await SecureStore.setItemAsync("email", data?.email || "")
             await SecureStore.setItemAsync("token", data?.token || "")
 
             return data
         } catch (error) {
             console.error("Erro ao inserir o profissional:", error)
+            alert("Não foi possível criar sua conta. Verifique sua conexão e tente novamente.")
             return null
         }
     }
