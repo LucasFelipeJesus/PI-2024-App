@@ -12,7 +12,8 @@ export function Header() {
     const auth = useAuth()
     const [userToken, setUserToken] = useState("")
     const [userEmail, setUserEmail] = useState("")
-    const [userType, setUserType] = useState("")
+    const [userName, setUserName] = useState("")
+    const [userImage, setUserImage] = useState("")
 
     useEffect(() => {
         async function getUserToken() {
@@ -33,21 +34,30 @@ export function Header() {
     }, [])
 
     useEffect(() => {
-        async function getUserType() {
-            const type = await SecureStore.getItemAsync("type")
-            if (type) setUserType(type)
+        async function getUserName() {
+            const type = await SecureStore.getItemAsync("name")
+            if (type) setUserName(type)
             return
         }
-        getUserType()
+        getUserName()
     }, [])
 
-    const userTypeName = userType === "customer" ? "Cliente" : "Churrasqueiro"
+    useEffect(() => {
+        async function getUserImage() {
+            const email = await SecureStore.getItemAsync("image")
+            if (email) setUserImage(email)
+            return
+        }
+        getUserImage()
+    }, [])
+
+    const userTypeName = "Churrasqueiro"
 
     return (
         <View style={styles.container}>
-            <Image style={styles.image} source={{ uri: "https://github.com/luisgaspari.png" }} />
+            <Image style={styles.image} source={{ uri: userImage }} />
             <View style={styles.user}>
-                <Text style={styles.name}>{userToken}</Text>
+                <Text style={styles.name}>{userName}</Text>
                 <Text style={styles.email}>{userEmail}</Text>
             </View>
             <Badge style={styles.badge}>{userTypeName}</Badge>

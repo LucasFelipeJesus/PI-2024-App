@@ -12,8 +12,11 @@ export default function Register() {
     const [name, setName] = useState("")
     const [cep, setCep] = useState("")
     const [phone, setPhone] = useState("")
-    const [document, setDocument] = useState("")
-    const [birthdate, setBirthdate] = useState("")
+    const [cpfCnpj, setCpfCnpj] = useState("")
+    const [address, setAddress] = useState("")
+    const [district, setDistrict] = useState("")
+    const [city, setCity] = useState("")
+    const [state, setState] = useState("")
 
     const onSignUpPressed = () => {
         router.push("provider/services")
@@ -52,7 +55,7 @@ export default function Register() {
                 <TextInput
                     label="Telefone"
                     returnKeyType="next"
-                    keyboardType="phone-pad"
+                    keyboardType="numeric"
                     underlineColor="transparent"
                     mode="outlined"
                     style={styles.input}
@@ -62,22 +65,11 @@ export default function Register() {
                 <TextInput
                     label="CPF ou CNPJ"
                     returnKeyType="next"
-                    keyboardType="number-pad"
+                    keyboardType="numeric"
                     underlineColor="transparent"
                     mode="outlined"
                     style={styles.input}
-                    onChangeText={(text) => setDocument(text)}
-                />
-
-                <TextInput
-                    label="Data de Nascimento"
-                    returnKeyType="next"
-                    textContentType="birthdate"
-                    keyboardType="decimal-pad"
-                    underlineColor="transparent"
-                    mode="outlined"
-                    style={styles.input}
-                    onChangeText={(text) => setBirthdate(text)}
+                    onChangeText={(text) => setCpfCnpj(text)}
                 />
 
                 <Button mode="contained" onPress={onSignUpPressed} style={{ marginTop: 24 }}>

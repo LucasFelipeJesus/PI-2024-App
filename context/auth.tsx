@@ -1,5 +1,5 @@
 import { router } from "expo-router"
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import React, { createContext, ReactNode, useContext, useState } from "react"
 import {
     createUserWithEmailAndPassword,
     initializeAuth,
@@ -14,11 +14,17 @@ interface IUserLogin {
     password: string
 }
 
+interface IUserProfile {
+    name?: string
+    image?: string
+}
+
 interface IAuthContext {
     user: IUserLogin
+    professional: IUserProfile | null
     setUser: (user: IUserLogin) => void
-    handleLogin: () => void
-    handleSignup: () => void
+    handleLogin: () => Promise<void>
+    handleSignup: () => Promise<void>
     handleLogout: () => void
 }
 
@@ -30,59 +36,122 @@ const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<IUserLogin>({ email: "", password: "" })
+    const [professional, setProfessional] = useState<IUserProfile | null>(null)
+    const [token, setToken] = useState<string>("")
 
-    const handleLogin = () => {
-        if (!user || user.email == "" || user.password == "") {
-            alert("Digite seu email e senha")
-            return
+    const fetchProfessional = async (userId: string) => {
+        if (!userId) return null
+
+        try {
+            const response = await fetch(
+                `https://api-bckend.onrender.com/api/professional/${userId}`
+            )
+
+            if (!response.ok) {
+                throw new Error("Falha ao obter detalhes do profissional")
+            }
+
+            const data = await response.json()
+            setProfessional(data)
+
+            // Safely store profile information
+            await SecureStore.setItemAsync("name", data?.name || "")
+            await SecureStore.setItemAsync("image", data?.Image || "")
+
+            return data
+        } catch (error) {
+            console.error("Erro ao buscar detalhes do profissional:", error)
+            return null
         }
-        const auth = initializeAuth(firebaseApp)
-        signInWithEmailAndPassword(auth, user.email, user.password)
-            .then((userCredential) => {
-                SecureStore.setItemAsync("token", userCredential.user?.uid || "")
-                SecureStore.setItemAsync("email", user?.email || "")
-                setUser(user)
-                router.replace("provider/(tabs)")
-            })
-            .catch(() => {
-                alert("Usuário ou senha inválidos!")
-            })
     }
 
-    const handleSignup = () => {
-        if (!user || user.email == "" || user.password == "") {
-            alert("Digite seu email e senha")
+    const handleLogin = async () => {
+        // Input validation
+        if (!user.email || !user.password) {
+            alert("Por favor, digite seu e-mail e senha")
             return
         }
-        const auth = initializeAuth(firebaseApp)
-        createUserWithEmailAndPassword(auth, user.email, user.password)
-            .then((userCredential) => {
-                SecureStore.setItemAsync("token", userCredential.user?.uid || "")
-                SecureStore.setItemAsync("email", user?.email || "")
-                setUser(user)
 
-                // Buscar o cadastro do usuário no banco de dados da API
-                // Se o usuário for encontrado, redirecionar para a tela de Home
-                // router.replace("provider/(tabs)")
+        try {
+            const auth = initializeAuth(firebaseApp)
+            const userCredential = await signInWithEmailAndPassword(auth, user.email, user.password)
+            const userId = userCredential.user?.uid || ""
 
-                // caso contrário, redirecionar para a tela de cadastro
-                router.replace("provider/register")
-            })
-            .catch(() => {
-                alert("Usuário já cadastrado!")
-            })
+            // Store token and email
+            setToken(userId)
+            await SecureStore.setItemAsync("token", userId)
+            await SecureStore.setItemAsync("email", user.email)
+
+            // Fetch professional details
+            await fetchProfessional(userId)
+
+            // Navigate to provider tabs
+            router.replace("provider/(tabs)")
+        } catch (error) {
+            console.error("Login error:", error)
+            alert("E-mail ou senha inválidos")
+        }
     }
 
-    const handleLogout = () => {
-        const auth = initializeAuth(firebaseApp)
-        SecureStore.deleteItemAsync("token")
-        SecureStore.deleteItemAsync("email")
-        signOut(auth)
-        router.push("../../")
+    const handleSignup = async () => {
+        // Input validation
+        if (!user.email || !user.password) {
+            alert("Por favor, digite seu e-mail e senha")
+            return
+        }
+
+        try {
+            const auth = initializeAuth(firebaseApp)
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                user.email,
+                user.password
+            )
+            const userId = userCredential.user?.uid || ""
+
+            // Store token and email
+            await SecureStore.setItemAsync("token", userId)
+            await SecureStore.setItemAsync("email", user.email)
+
+            // Redirect to registration page
+            router.replace("provider/register")
+        } catch (error) {
+            console.error("Signup error:", error)
+            alert("Usuário já registrado ou o registro falhou")
+        }
+    }
+
+    const handleLogout = async () => {
+        try {
+            const auth = initializeAuth(firebaseApp)
+
+            // Remove all stored credentials
+            await Promise.all([
+                SecureStore.deleteItemAsync("token"),
+                SecureStore.deleteItemAsync("email"),
+                SecureStore.deleteItemAsync("name"),
+                SecureStore.deleteItemAsync("image"),
+            ])
+
+            // Sign out and navigate
+            await signOut(auth)
+            router.push("../../")
+        } catch (error) {
+            console.error("Logout error:", error)
+        }
     }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, handleLogin, handleSignup, handleLogout }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                professional,
+                setUser,
+                handleLogin,
+                handleSignup,
+                handleLogout,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     )
