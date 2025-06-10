@@ -59,6 +59,8 @@ export function Header() {
     )
 }
 
+export default Header;
+
 export const styles = StyleSheet.create({
     container: {
         width: "100%",

@@ -44,4 +44,6 @@ export const colors = {
 		200: '#de1a25',
 		100: '#f42231',
 	},
-}
+};
+
+export default colors;

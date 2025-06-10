@@ -109,3 +109,7 @@ export function useAuth() {
     }
     return context
 }
+function setPosts(json: any): any {
+    throw new Error("Function not implemented.")
+}
+

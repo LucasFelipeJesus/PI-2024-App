@@ -3,3 +3,5 @@ export function PasswordValidator(password: string | any[]) {
     if (password.length < 6) return "A senha deve ter pelo menos 6 caracteres."
     return ""
 }
+
+export default PasswordValidator;
